@@ -7,7 +7,6 @@ import joblib
 import numpy as np
 from sklearn.datasets import load_iris
 from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import StandardScaler
 # local imports
 sys.path.append(os.path.join('.'))
 from src.model_params import model_params
@@ -18,7 +17,6 @@ class ModelCreationPipeline:
     @staticmethod
     def main() -> None:
         X, y = ModelCreationPipeline._load_data()
-        X = ModelCreationPipeline._scale_data(X)
         lr = ModelCreationPipeline._train_model(X, y)
         ModelCreationPipeline._save_model(lr)
 
@@ -36,23 +34,6 @@ class ModelCreationPipeline:
         X = iris.data
         y = iris.target
         return X, y
-
-    @staticmethod
-    def _scale_data(X: np.ndarray) -> np.ndarray:
-        """Scales input data so that regularization is appropriately applied to all features
-
-        Parameters
-        ----------
-        X
-            input data
-
-        Returns
-        -------
-        np.ndarray
-            scaled input data
-        """
-        ss = StandardScaler(with_mean=True, with_std=True)
-        return ss.fit_transform(X)
 
     @staticmethod
     def _train_model(

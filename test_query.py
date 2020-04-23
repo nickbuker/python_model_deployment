@@ -64,3 +64,4 @@ if __name__ == '__main__':
         print(response_json)
     else:
         print(response.status_code, response.reason)
+        print(response.json())

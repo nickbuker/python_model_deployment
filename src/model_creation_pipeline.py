@@ -1,6 +1,5 @@
 # standard library imports
 import os
-import sys
 from typing import Tuple
 # third party imports
 import joblib
@@ -8,8 +7,7 @@ import numpy as np
 from sklearn.datasets import load_iris
 from sklearn.linear_model import LogisticRegression
 # local imports
-sys.path.append(os.path.join('.'))
-from src.model_params import model_params
+from model_params import model_params
 
 
 class ModelCreationPipeline:

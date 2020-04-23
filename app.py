@@ -14,9 +14,6 @@ from src.data_schemas import OutputSchema, QuerySchema
 app = Flask(__name__)
 api = Api(app)
 
-# data schemas
-QuerySchema()
-output_schema = OutputSchema()
 
 # load trained model
 lr = joblib.load(os.path.join('model_bin', 'lr.joblib'))
@@ -36,11 +33,17 @@ class IrisProb(Resource):
         data = json.loads(request.get_json())
         user_query = json.loads(data['query'])
         X = np.array(user_query)
-        output = {
-            "prediction": lr.predict(X).tolist(),
-            "probability": lr.predict_proba(X).max(axis=1).tolist()
-        }
-        return Response(output_schema.dumps(output), mimetype='application/json')
+        ob_ids = [1, 2]
+        preds = lr.predict(X).tolist()
+        probs = lr.predict_proba(X).max(axis=1).tolist()
+        output = []
+        for i, ob_id in enumerate(ob_ids):
+            output.append({
+                'ob_id': ob_id,
+                'prediction': preds[i],
+                'probability': probs[i]
+            })
+        return Response(json.dumps(output), mimetype='application/json')
 
 
 api.add_resource(IrisProb, '/')

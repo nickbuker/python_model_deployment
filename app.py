@@ -7,8 +7,9 @@ from flask_restful import Api, reqparse, Resource
 import joblib
 from marshmallow import ValidationError
 import numpy as np
+import pandas as pd
 # local imports
-from src.data_schemas import OutputSchema, QuerySchema
+from src.data_schemas import QuerySchema
 
 
 app = Flask(__name__)
@@ -31,13 +32,15 @@ class IrisProb(Resource):
         # except ValidationError as e:
         #     print(e)
         data = json.loads(request.get_json())
-        user_query = json.loads(data['query'])
-        X = np.array(user_query)
-        ob_ids = [1, 2]
+        data_lists = []
+        for d in data:
+            data_lists.append([d['ob_id'], d['sep_len'], d['sep_wid'], d['pet_len'], d['pet_wid']])
+        data_df = pd.DataFrame(data=data_lists, columns=['ob_id', 'sep_len', 'sep_wid', 'pet_len', 'pet_wid'])
+        X = data_df.loc[:, ['sep_len', 'sep_wid', 'pet_len', 'pet_wid']]
         preds = lr.predict(X).tolist()
         probs = lr.predict_proba(X).max(axis=1).tolist()
         output = []
-        for i, ob_id in enumerate(ob_ids):
+        for i, ob_id in enumerate(data_df['ob_id']):
             output.append({
                 'ob_id': ob_id,
                 'prediction': preds[i],

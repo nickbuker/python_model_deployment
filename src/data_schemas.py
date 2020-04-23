@@ -3,8 +3,15 @@ from marshmallow import Schema, fields
 from marshmallow.validate import Range
 
 
+gtz = 'Value must be greater than 0.'
+
+
 class QuerySchema(Schema):
-    query = fields.List(fields.List(fields.Float()), required=True)
+    ob_id = fields.Integer(required=True)
+    sep_len = fields.Float(required=True, validate=Range(min=0, error=gtz))
+    sep_wid = fields.Float(required=True, validate=Range(min=0, error=gtz))
+    pet_len = fields.Float(required=True, validate=Range(min=0, error=gtz))
+    pet_wid = fields.Float(required=True, validate=Range(min=0, error=gtz))
 
 
 class OutputSchema(Schema):

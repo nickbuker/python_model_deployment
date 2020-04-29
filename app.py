@@ -1,62 +1,28 @@
 # standard library imports
-import argparse
-import json
-import os
+from argparse import ArgumentParser
 # third party imports
-from flask import Flask, Response, abort, request
-from flask_restful import Api, reqparse, Resource
-import joblib
-import pandas as pd
+from flask import Flask
+from flask_restful import Api
 # local imports
 from model_zoo.iris.iris_api import IrisAPI
 
 
 app = Flask(__name__)
 api = Api(app)
-
-# argument parsing
-parser = reqparse.RequestParser()
-parser.add_argument('query')
-
-
-class IrisProb(Resource):
-    @staticmethod
-    def post():
-        data = json.loads(request.json)
-        errors = iris_query_schema.validate(data=data, many=True)
-        if errors:
-            abort(400, str(errors))
-        data_lists = []
-        for d in data:
-            data_lists.append([d['ob_id'], d['sep_len'], d['sep_wid'], d['pet_len'], d['pet_wid']])
-        data_df = pd.DataFrame(data=data_lists, columns=['ob_id', 'sep_len', 'sep_wid', 'pet_len', 'pet_wid'])
-        X = data_df.loc[:, ['sep_len', 'sep_wid', 'pet_len', 'pet_wid']]
-        preds = lr.predict(X).tolist()
-        probs = lr.predict_proba(X).max(axis=1).tolist()
-        output = []
-        for i, ob_id in enumerate(data_df['ob_id']):
-            output.append({
-                'ob_id': ob_id,
-                'prediction': preds[i],
-                'probability': probs[i]
-            })
-        return Response(json.dumps(output), mimetype='application/json')
-
-
-api.add_resource(IrisProb, '/')
+api.add_resource(IrisAPI, '/iris/')
 
 
 if __name__ == '__main__':
     debug = False
-    parser = argparse.ArgumentParser(allow_abbrev=False)
-    parser.add_argument(
+    arg_parser = ArgumentParser(allow_abbrev=False)
+    arg_parser.add_argument(
         '-d',
         '--debug',
         help='Optional arg indicating app debug mode.',
         action='store_true',
     )
 
-    args = parser.parse_args()
+    args = arg_parser.parse_args()
     if args.debug:
         debug = True
     app.run(debug=debug)

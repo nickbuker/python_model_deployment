@@ -7,7 +7,7 @@ import numpy as np
 from sklearn.datasets import load_iris
 from sklearn.linear_model import LogisticRegression
 # local imports
-from iris_model_params import model_params
+from model_zoo.iris.iris_model_params import model_params
 
 
 class CreateIrisModel:

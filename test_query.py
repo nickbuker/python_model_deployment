@@ -53,7 +53,7 @@ data = [
 
 
 if __name__ == '__main__':
-    url = 'http://127.0.0.1:5000/'
+    url = 'http://127.0.0.1:5000/iris/'
     json_data = json.dumps(data)
     response = requests.post(url=url, json=json_data)
     if response.status_code == 200:

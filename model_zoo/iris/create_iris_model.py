@@ -7,16 +7,16 @@ import numpy as np
 from sklearn.datasets import load_iris
 from sklearn.linear_model import LogisticRegression
 # local imports
-from model_params import model_params
+from model_zoo.iris.iris_model_params import model_params
 
 
-class ModelCreationPipeline:
+class CreateIrisModel:
 
     @staticmethod
     def main() -> None:
-        X, y = ModelCreationPipeline._load_data()
-        lr = ModelCreationPipeline._train_model(X, y)
-        ModelCreationPipeline._save_model(lr)
+        X, y = CreateIrisModel._load_data()
+        lr = CreateIrisModel._train_model(X, y)
+        CreateIrisModel._save_model(lr)
 
     @staticmethod
     def _load_data() -> Tuple[np.ndarray, np.ndarray]:
@@ -59,7 +59,7 @@ class ModelCreationPipeline:
     @staticmethod
     def _save_model(
             lr: LogisticRegression,
-            mod_path=os.path.join('model_bin', 'lr.joblib')
+            mod_path=os.path.join('model_zoo', 'iris', 'iris_model.joblib')
     ) -> None:
         """
 
@@ -76,4 +76,4 @@ class ModelCreationPipeline:
 
 
 if __name__ == '__main__':
-    ModelCreationPipeline.main()
+    CreateIrisModel.main()

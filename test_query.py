@@ -4,7 +4,7 @@ import json
 from marshmallow import ValidationError
 import requests
 # local imports
-from src.data_schemas import OutputSchema
+from model_zoo.iris.iris_data_schemas import IrisOutputSchema
 
 data = [
     {
@@ -53,12 +53,12 @@ data = [
 
 
 if __name__ == '__main__':
-    url = 'http://127.0.0.1:5000/'
+    url = 'http://127.0.0.1:5000/iris/'
     json_data = json.dumps(data)
     response = requests.post(url=url, json=json_data)
     if response.status_code == 200:
         response_json = response.json()
-        val_errors = OutputSchema().validate(data=response_json, many=True)
+        val_errors = IrisOutputSchema().validate(data=response_json, many=True)
         if val_errors:
             raise ValidationError(f'Following response validation errors occurred: {val_errors}')
         print(response_json)

@@ -1,4 +1,5 @@
 # standard library imports
+import argparse
 import json
 import os
 # third party imports
@@ -52,4 +53,16 @@ api.add_resource(IrisProb, '/')
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    debug = False
+    parser = argparse.ArgumentParser(allow_abbrev=False)
+    parser.add_argument(
+        '-d',
+        '--debug',
+        help='Optional arg indicating app debug mode.',
+        action='store_true',
+    )
+
+    args = parser.parse_args()
+    if args.debug:
+        debug = True
+    app.run(debug=debug)

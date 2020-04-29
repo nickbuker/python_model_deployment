@@ -8,17 +8,11 @@ from flask_restful import Api, reqparse, Resource
 import joblib
 import pandas as pd
 # local imports
-from src.data_schemas import QuerySchema
+from model_zoo.iris.iris_api import IrisAPI
 
 
 app = Flask(__name__)
 api = Api(app)
-
-# instantiate query schema
-query_schema = QuerySchema()
-
-# load trained model
-lr = joblib.load(os.path.join('model_bin', 'lr.joblib'))
 
 # argument parsing
 parser = reqparse.RequestParser()
@@ -29,7 +23,7 @@ class IrisProb(Resource):
     @staticmethod
     def post():
         data = json.loads(request.json)
-        errors = query_schema.validate(data=data, many=True)
+        errors = iris_query_schema.validate(data=data, many=True)
         if errors:
             abort(400, str(errors))
         data_lists = []

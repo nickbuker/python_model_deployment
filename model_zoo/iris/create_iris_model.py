@@ -14,6 +14,12 @@ class CreateIrisModel:
 
     @staticmethod
     def main() -> None:
+        """Loads data, trains, and saves sklearn logistic regression model
+
+        Returns
+        -------
+        None
+        """
         X, y = CreateIrisModel._load_data()
         lr = CreateIrisModel._train_model(X, y)
         CreateIrisModel._save_model(lr)
@@ -61,11 +67,12 @@ class CreateIrisModel:
             lr: LogisticRegression,
             mod_path=os.path.join('model_zoo', 'iris', 'iris_model.joblib')
     ) -> None:
-        """
+        """Saves trained model binary in joblib format
 
         Parameters
         ----------
         lr
+            trained sklearn logistic regression model
 
         Returns
         -------

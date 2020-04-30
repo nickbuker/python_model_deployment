@@ -16,15 +16,17 @@ from model_zoo.iris.iris_data_schemas import IrisQuerySchema
 class IrisAPI(Resource):
 
     def __init__(self):
+        """Constructor for model API"""
         self.iris_model = self._load_model()
         self.query_schema = IrisQuerySchema()
 
     def post(self) -> Response:
-        """
+        """Receives request and returns model response
 
         Returns
         -------
-
+        Response
+            model Response object
         """
         data = json.loads(request.json)
         self._validate_data(data=data)
@@ -32,11 +34,12 @@ class IrisAPI(Resource):
         return Response(json.dumps(output), mimetype='application/json')
 
     def _load_model(self) -> LogisticRegression:
-        """
+        """Loads model into memory, if model does not exist, trains a new model
 
         Returns
         -------
-
+        LogisticRegression
+            trained model
         """
         model_path = os.path.join('model_zoo', 'iris', 'iris_model.joblib')
         if not os.path.exists(model_path):
@@ -44,15 +47,16 @@ class IrisAPI(Resource):
         return joblib.load(model_path)
 
     def _validate_data(self, data: List[Dict]) -> None:
-        """
+        """Validates request data against marshmallow schema
 
         Parameters
         ----------
         data
+            request data
 
         Returns
         -------
-
+        None
         """
         errors = self.query_schema.validate(data=data, many=True)
         if errors:
@@ -60,15 +64,19 @@ class IrisAPI(Resource):
         return
 
     def _prep_data_for_model(self, data: List[Dict]) -> Tuple[pd.DataFrame, pd.Series]:
-        """
+        """Converts data from list of dictionaries to DataFrame and Series
 
         Parameters
         ----------
         data
+            request data
 
         Returns
         -------
-
+        pd.DataFrame
+            data to be ingested by model
+        pd.Series
+            observation IDs
         """
         data_lists = []
         for d in data:
@@ -77,16 +85,19 @@ class IrisAPI(Resource):
         return data_df.loc[:, ['sep_len', 'sep_wid', 'pet_len', 'pet_wid']], data_df.loc[:, 'ob_id']
 
     def _generate_output(self, mod_data: pd.DataFrame, ob_ids: pd.Series) -> List[Dict]:
-        """
+        """Ingests model data, queries model, and formats output
 
         Parameters
         ----------
         mod_data
+            data to be ingested by model
         ob_ids
+            observation IDs
 
         Returns
         -------
-
+        List[Dict]
+            observation IDs and model predictions
         """
         preds = self.iris_model.predict(mod_data).tolist()
         probs = self.iris_model.predict_proba(mod_data).max(axis=1).tolist()
